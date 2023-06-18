@@ -7,3 +7,4 @@ matplotlib==3.5.1
 mpld3==0.5.9
 sklearn==0.0.post1
 imblearn==0.0
+openpyxl==3.0.9
