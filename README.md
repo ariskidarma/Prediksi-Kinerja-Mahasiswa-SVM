@@ -12,8 +12,8 @@ Dataset terdiri dari 4 instrumen:
 3. _Emotion Regulation Questionnaire_ (ERQ)
 4. Kinerja Mahasiswa
 
-- Sumber\t: Kuesioner Google Form
-- Responden\t: Mahasiswa Fakultas Ilmu Komputer, Universitas Brawijaya
+- Sumber: Kuesioner Google Form
+- Responden: Mahasiswa Fakultas Ilmu Komputer, Universitas Brawijaya
 
 <hr>
 
