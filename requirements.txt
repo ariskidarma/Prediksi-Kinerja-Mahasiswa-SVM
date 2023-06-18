@@ -1,0 +1,5 @@
+numpy==1.23.5
+streamlit==1.21.0
+streamlit-aggrid==0.3.2
+altair==4.2.0
+sklearn==0.0.post1
