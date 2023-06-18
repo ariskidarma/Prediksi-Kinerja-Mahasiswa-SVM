@@ -1,9 +1,9 @@
 # Prediksi Kinerja Mahasiswa Berdasarkan Faktor Afektif Pada HSS Learning Menggunakan Metode Support Vector Machine
 Dashboard Prediksi Kinerja Mahasiswa dengan SVM beserta Demo Prediksi
 
-oleh: Riski Darmawan - Riski Darmawan - 195150200111039
+oleh: Riski Darmawan - 195150200111039
 
-<hr><\hr>
+<hr>
 
 ## Deskripsi Dataset
 Dataset terdiri dari 4 instrumen:
@@ -15,7 +15,7 @@ Dataset terdiri dari 4 instrumen:
 - Sumber\t: Kuesioner Google Form
 - Responden\t: Mahasiswa Fakultas Ilmu Komputer, Universitas Brawijaya
 
-<hr><\hr>
+<hr>
 
 ## Dashboard
 
