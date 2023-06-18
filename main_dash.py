@@ -36,25 +36,25 @@ def get_matakuliah(df):
 def main_page():
     # Read Dataframe
     ## Dataset 
-    df = pd.read_excel('../Jupyter/Result/Data Result - over full-n8.xlsx', sheet_name='df')
+    df = pd.read_excel('Data/Data Result - over full-n8.xlsx', sheet_name='df')
 
     ## Dataframe After Oversampling
-    df_oversampling = pd.read_excel('../Jupyter/Result/Data Result - over full-n8.xlsx', sheet_name='df_a oversampling')
+    df_oversampling = pd.read_excel('Data/Data Result - over full-n8.xlsx', sheet_name='df_a oversampling')
 
     ## 10 Fold Afektif dan Kategorikal Afektif
-    eval_model = pd.read_excel('../Jupyter/Result/Data Result - over full-n8.xlsx', sheet_name='Evaluasi Model')
+    eval_model = pd.read_excel('Data/Data Result - over full-n8.xlsx', sheet_name='Evaluasi Model')
 
     ## 10 Fold Hyperparameter Tuning
-    eval_hypertune = pd.read_excel('../Jupyter/Result/Hyperparameter Tuning - over full-n8.xlsx', sheet_name='Hypertune')
+    eval_hypertune = pd.read_excel('Data/Hyperparameter Tuning - over full-n8.xlsx', sheet_name='Hypertune')
 
     ## Performance Metrics - Manual vs Library
-    eval_svm = pd.read_excel('../Jupyter/Result/Data Result - over full-n8.xlsx', sheet_name='Performance SVM')
+    eval_svm = pd.read_excel('Data/Data Result - over full-n8.xlsx', sheet_name='Performance SVM')
 
     # Confusion Matrix SVM
-    conf_SVM = pd.read_excel('../Jupyter/Result/Data Result - over full-n8.xlsx', sheet_name='Confusion SVM')
+    conf_SVM = pd.read_excel('Data/Data Result - over full-n8.xlsx', sheet_name='Confusion SVM')
 
     # Performance Metrics
-    eval_predict = pd.read_excel('../Jupyter/Result/Data Result - over full-n8.xlsx', sheet_name='Performance Metrics')
+    eval_predict = pd.read_excel('Data/Data Result - over full-n8.xlsx', sheet_name='Performance Metrics')
 
 
     fig = plt.figure(figsize=(30,15))
