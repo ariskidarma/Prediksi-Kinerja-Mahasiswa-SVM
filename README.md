@@ -19,4 +19,4 @@ Dataset terdiri dari 4 instrumen:
 
 ## Dashboard
 
-https://ariskidarma-prediksi-kinerja-mahasiswa-svm.streamlit.app/
+ariskidarma-prediksi-kinerja-mahasiswa-svm.streamlit.app/
