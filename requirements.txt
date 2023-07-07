@@ -5,6 +5,6 @@ pandas
 numpy
 matplotlib
 mpld3
-scikit-learn
-imblearn
+scikit-learn==1.0.2
+imblearn==0.0
 openpyxl
