@@ -4,7 +4,7 @@ import streamlit as st
 import matplotlib
 import matplotlib.pyplot as plt
 import altair as alt
-from st_aggrid import AgGrid
+
 from collections import Counter
 
 import mpld3
