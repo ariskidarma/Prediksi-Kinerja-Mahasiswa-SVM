@@ -399,8 +399,8 @@ def prediksi(df):
     kinerja_cat = pd.DataFrame({})
 
     model_SVM = svm.SVM(gamma='auto', kernel='rbf', learning_rate=1e-6, C=7000, random_state=67)
-    Weight = pd.read_excel('Data/Model SVM - over full-n8.xlsx', sheet_name='Weight', index_col=0)
-    X_train_initial = pd.read_excel('Data/Model SVM - over full-n8.xlsx', sheet_name='X_train_initial', index_col=0)
+    Weight = pd.read_excel('Data/Model SVM.xlsx', sheet_name='Weight', index_col=0)
+    X_train_initial = pd.read_excel('Data/Model SVM.xlsx', sheet_name='X_train_initial', index_col=0)
 
     model_SVM.Weight = Weight.to_dict('list')
     model_SVM.X_train_initial = X_train_initial.to_numpy()
