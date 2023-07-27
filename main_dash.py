@@ -4,7 +4,7 @@ import streamlit as st
 import matplotlib
 import matplotlib.pyplot as plt
 import altair as alt
-
+from st_aggrid import AgGrid
 from collections import Counter
 
 import mpld3
@@ -33,7 +33,7 @@ def get_matakuliah(df):
     return df_mk
 
 
-def main_page():
+def main_page(lang):
     # Read Dataframe
     ## Dataset 
     df = pd.read_excel('Data/Data Result.xlsx', sheet_name='df')
@@ -56,39 +56,42 @@ def main_page():
     # Performance Metrics
     eval_predict = pd.read_excel('Data/Data Result.xlsx', sheet_name='Performance Metrics')
 
-
     fig = plt.figure(figsize=(30,15))
     gs =  fig.add_gridspec(8, 11)
-    fig.suptitle("Prediksi Kinerja Mahasiswa Berdasarkan Faktor Afektif Pada HSS Learning\nMenggunakan Metode Support Vector Machine", fontsize=32.5, y=1)
+    if lang == 'Indonesia':
+        suptitle_name = "Prediksi Kinerja Mahasiswa Berdasarkan Faktor Afektif Pada HSS Learning\nMenggunakan Metode Support Vector Machine"
+    elif lang == 'English':
+        suptitle_name = "Prediction of Student Performance Based on Affective Factors in HSS Learning\nUsing Support Vector Machine Method"
+    fig.suptitle(suptitle_name, fontsize=32.5, y=1)
     gs.update(wspace=.5, hspace=.5)
     # fig.tight_layout()
     # gs.tight_layout(pad=3)
 
     ax1 = fig.add_subplot(gs[0:2, 0:4])  # Jumlah Data
-    bar_plot_jumlahdata(ax1, df, df_oversampling)
+    bar_plot_jumlahdata(ax1, df, df_oversampling, lang)
 
     ax2 = fig.add_subplot(gs[2:6, 0:4])  # Persebaran Nilai Mahasiswa
-    bar_plot_nilai(ax2, df, df_oversampling)
+    bar_plot_nilai(ax2, df, df_oversampling, lang)
 
     ax3 = fig.add_subplot(gs[6:, 0:2])  # Persentase Angkatan
-    presentase_angkatan_plot(ax3, df)
+    presentase_angkatan_plot(ax3, df, lang)
 
     ax4 = fig.add_subplot(gs[6:, 2:4])  # Persentase Kelas
-    presentase_kelas_plot(ax4, df)
+    presentase_kelas_plot(ax4, df, lang)
 
     ax5 = fig.add_subplot(gs[0:3, 4:9])  # Performa Model SVM
     ax6 = fig.add_subplot(gs[0:3, 9:])  # Average Performa Model SVM
-    kfold_bar_plot(ax5, ax6, eval_model)
+    kfold_bar_plot(ax5, ax6, eval_model, lang)
     ## average use bar biasa, bkn barh
 
     ax7 = fig.add_subplot(gs[3:5, 4:])  # Hyperparameter Tuning
-    hyperparameter_tuning_table(ax7, eval_hypertune)
+    hyperparameter_tuning_table(ax7, eval_hypertune, lang)
 
     ax8 = fig.add_subplot(gs[5:8, 4:9])  # Performa SVM
-    acc_bar_plot(ax8, eval_predict)
+    acc_bar_plot(ax8, eval_predict, lang)
 
     ax9 = fig.add_subplot(gs[5:8, 9:])  # Confusion Matrix SVM
-    confusion_matrix_table(ax9, conf_SVM)
+    confusion_matrix_table(ax9, conf_SVM, lang)
 
     st.pyplot(fig)
 
@@ -105,10 +108,15 @@ def addlabels_svm(ax, shift, data, size):
 
 
 # fungsi mencetak bar plot jumlah data
-def bar_plot_jumlahdata(ax, df, df_over):
+def bar_plot_jumlahdata(ax, df, df_over, lang):
     dict_data = {}
-    dict_data["Sebelum\nOversampling"] = df.shape[0]
-    dict_data["Setelah\nOversampling"] = df_over.shape[0]
+
+    if lang == 'Indonesia':
+        dict_data["Sebelum\nOversampling"] = df.shape[0]
+        dict_data["Setelah\nOversampling"] = df_over.shape[0]
+    elif lang == 'English':    
+        dict_data["Before\nOversampling"] = df.shape[0]
+        dict_data["After\nOversampling"] = df_over.shape[0]
 
     data_plot = pd.Series(dict_data).sort_values(ascending=False)
 
@@ -121,7 +129,7 @@ def bar_plot_jumlahdata(ax, df, df_over):
         ax.text(s=str(pr), x=pr-40, y=i, color="black",
             verticalalignment="center", horizontalalignment="left", size=19)
 
-    ax.set_title("Jumlah Data", y=.95, fontsize=18)
+    ax.set_title("Jumlah Data" if lang == 'Indonesia' else 'Number of Data', y=.95, fontsize=18)
     # ax1.box(False)
     ax.axis('off')
     ax.set_xticks([])
@@ -132,7 +140,7 @@ def bar_plot_jumlahdata(ax, df, df_over):
 
 
 # fungsi mencetak bar plot data nilai
-def bar_plot_nilai(ax, df, df_over):
+def bar_plot_nilai(ax, df, df_over, lang):
 # def bar_plot_nilai(df, position):
     # Dictionary nilai
     dict_5cat = {}
@@ -152,53 +160,56 @@ def bar_plot_nilai(ax, df, df_over):
     # fig = plt.figure(figsize=(10,5))
 
     X_axis = np.arange(len(dict_5cat))
-    ax.bar(X_axis - 0.2, pd.Series(dict_nilai), 0.4, label = 'Sebelum Oversampling', color=cmap_accent[0])
-    ax.bar(X_axis + 0.2, pd.Series(dict_nilai_over), 0.4, label = 'Setelah Oversampling', color=cmap_accent[2])
+    ax.bar(X_axis - 0.2, pd.Series(dict_nilai), 0.4, label = 'Sebelum Oversampling' if lang == 'Indonesia' else 'Before Oversampling', color=cmap_accent[0])
+    ax.bar(X_axis + 0.2, pd.Series(dict_nilai_over), 0.4, label = 'Setelah Oversampling' if lang == 'Indonesia' else 'After Oversampling', color=cmap_accent[2])
 
     addlabels(ax, -0.2, pd.Series(dict_nilai), size=14)
     addlabels(ax, 0.2, pd.Series(dict_nilai_over), size=14)
 
     ax.set_xticks(X_axis, dict_5cat.keys(), rotation=0)
     ax.tick_params(axis='both', which='major', labelsize=14)
-    ax.set_title("Persebaran Nilai Mahasiswa", y=1.015, fontsize=18)
-    ax.set_ylabel("Jumlah Mahasiswa", fontsize=14)
-    ax.set_xlabel("Kategori", fontsize=14)
+    ax.set_title("Persebaran Nilai Mahasiswa" if lang == 'Indonesia' else 'Distribution of Student Performance', y=1.015, fontsize=18)
+    ax.set_ylabel("Jumlah Mahasiswa" if lang == 'Indonesia' else 'Number of Students', fontsize=14)
+    ax.set_xlabel("Kategori" if lang == 'Indonesia' else 'Category', fontsize=14)
     ax.legend(shadow=True, fontsize=14)
     ax.grid(True, axis='y')
     # st.pyplot(fig)
 
 
-def presentase_angkatan_plot(ax, df):
+def presentase_angkatan_plot(ax, df, lang):
     # mengesktrak data angkatan dari data NIM
     df_angkatan = get_angkatan(df)
 
     # mengurutkan dan memberikan postfix angkatan
     angkatan = df_angkatan.value_counts().rename_axis('Angkatan').reset_index(name='Jumlah').sort_values(by=['Angkatan'])
-    angkatan = angkatan.replace({'Angkatan': {17: 'Angkatan 17', 18: 'Angkatan 18', 19:'Angkatan 19', 20:'Angkatan 20', 21:'Angkatan 21'}})
+    if lang == "Indonesia":
+        angkatan = angkatan.replace({'Angkatan': {17: 'Angkatan 17', 18: 'Angkatan 18', 19:'Angkatan 19', 20:'Angkatan 20', 21:'Angkatan 21'}})
+    elif lang == "English":
+        angkatan = angkatan.replace({'Angkatan': {17: 'Class of 2017', 18: 'Class of 2018', 19:'Class of 2019', 20:'Class of 2020', 21:'Class of 2021'}})
 
     # plotting
     # fig = plt.figure(figsize =(7, 7))
     ax.pie(angkatan['Jumlah'], labels=angkatan['Angkatan'],autopct='%1.1f%%',colors=cmap_accent[4::-1], labeldistance=None)
-    ax.set_title("Persentase Angkatan Responden", y=.9, fontsize=16)
+    ax.set_title("Persentase Angkatan Responden" if lang == "Indonesia" else "Percentage of Respondents Class", y=.9, fontsize=16)
     # plt.ylabel('')
     ax.legend(bbox_to_anchor=(0.5, 0.075), loc='upper center', ncol=2, fontsize=12)
     # st.pyplot(fig)
 
 
-def presentase_kelas_plot(ax, df):
+def presentase_kelas_plot(ax, df, lang):
     # membuat datafram baru berupa gabungan jumlah responden berdasarkan mata kuliah
     df_mk = get_matakuliah(df).value_counts().rename_axis('Kelas').reset_index(name='Jumlah').sort_values(by=['Kelas'])
     
     # plotting
     # fig = plt.figure(figsize =(7, 7))
     ax.pie(df_mk['Jumlah'], labels=df_mk['Kelas'],autopct='%1.2f%%',colors=cmap_accent, labeldistance=None)
-    ax.set_title("Persentase Kelas Responden", y=.9, fontsize=16)
+    ax.set_title("Persentase Kelas Responden" if lang == "Indonesia" else "Percentage of Respondents Subject", y=.9, fontsize=16)
     # plt.ylabel('')
     ax.legend(bbox_to_anchor=(0.5, 0.075), loc='upper center', ncol=3, fontsize=12)
     # st.pyplot(fig)
 
 
-def kfold_bar_plot(ax1, ax2, eval_model):
+def kfold_bar_plot(ax1, ax2, eval_model, lang):
     # preprocessing untuk penyesuaian streamlit
     eval_model.rename(columns={eval_model.columns[0]: "Fold"}, inplace=True)
     eval_model = eval_model.astype({"Fold":str, "Afektif":float, "Kategorikal Afektif":float})
@@ -208,16 +219,16 @@ def kfold_bar_plot(ax1, ax2, eval_model):
     # fig = plt.figure(figsize=(10,5))
 
     X_axis = np.arange(eval_model.shape[0] - 1)
-    ax1.bar(X_axis - 0.2, eval_model["Afektif"][:-1], 0.4, label = 'Data Afektif', color=cmap_accent[0])
-    ax1.bar(X_axis + 0.2, eval_model["Kategorikal Afektif"][:-1], 0.4, label = 'Data Kategorikal Afektif', color=cmap_accent[2])
+    ax1.bar(X_axis - 0.2, eval_model["Afektif"][:-1], 0.4, label = 'Data Afektif' if lang == "Indonesia" else "Affective Data", color=cmap_accent[0])
+    ax1.bar(X_axis + 0.2, eval_model["Kategorikal Afektif"][:-1], 0.4, label = 'Data Kategorikal Afektif' if lang == "Indonesia" else "Affective Categorical Data", color=cmap_accent[2])
 
     addlabels_svm(ax1, -0.2, eval_model['Afektif'][:-1].astype(float).round(1), 12)
     addlabels_svm(ax1, 0.2, eval_model['Kategorikal Afektif'][:-1].astype(float).round(1), 12)
 
     ax1.set_xticks(X_axis, eval_model[:-1].index, rotation=0)
-    ax1.set_title("Performa Model SVM pada Dataset Afektif dan Dataset Kategorikal Afektif", y=1.015, fontsize=18)
+    ax1.set_title("Performa Model SVM pada Dataset Afektif dan Dataset Kategorikal Afektif" if lang == "Indonesia" else "SVM Model Performance on Affective Dataset and Affective Categorical Dataset", y=1.015, fontsize=18)
     ax1.tick_params(axis='both', which='major', labelsize=14)
-    ax1.set_ylabel("Akurasi", fontsize=14)
+    ax1.set_ylabel("Akurasi" if lang == "Indonesia" else "Accuracy", fontsize=14)
     ax1.set_xlabel("Fold", fontsize=14)
     ax1.legend(loc='lower right', shadow=True, fontsize=14)
     ax1.grid(True, axis='y')
@@ -226,7 +237,10 @@ def kfold_bar_plot(ax1, ax2, eval_model):
 
 
     ## Average kfold Plot
-    data_average = eval_model.copy().iloc[-1].round(1).sort_values(ascending=False).rename({"Kategorikal Afektif": "Kategorikal\nAfektif"})
+    if lang == "Indonesia":
+        data_average = eval_model.copy().iloc[-1].round(1).sort_values(ascending=False).rename({"Kategorikal Afektif": "Kategorikal\nAfektif"})
+    elif lang == "English":
+        data_average = eval_model.copy().iloc[-1].round(1).sort_values(ascending=False).rename({"Kategorikal Afektif": "Affective\nCategorical"}).rename({"Afektif":"Affective"})
     # plotting
     ax2 = data_average.plot(kind='bar', color=cmap_accent[1])
 
@@ -236,15 +250,15 @@ def kfold_bar_plot(ax1, ax2, eval_model):
     for tick in ax2.get_xticklabels():
         tick.set_rotation(0)
 
-    ax2.set_title("Rata-rata Performa Model SVM", y=1.015, fontsize=18)
+    ax2.set_title("Rata-rata Performa Model SVM" if lang == "Indonesia" else "SVM Models Average Performance", y=1.015, fontsize=18)
     ax2.tick_params(axis='both', which='major', labelsize=14)
-    ax2.set_ylabel("Rata-rata Akurasi", fontsize=14)
+    ax2.set_ylabel("Rata-rata Akurasi" if lang == "Indonesia" else 'Average Accuracy', fontsize=14)
     # ax2.set_xlabel("Data", fontsize=14)
     # ax2.set_xticks(data_average.index, rotation=0)
     ax2.grid(True, axis='y')
 
 
-def hyperparameter_tuning_table(ax, eval_hypertune):
+def hyperparameter_tuning_table(ax, eval_hypertune, lang):
     eval_hypertune.set_index(eval_hypertune.columns[0], inplace=True)
     eval_hypertune.sort_values(by="average_score", ascending=False, inplace=True)
     eval_hypertune['average_score'] = eval_hypertune['average_score'].round(2).astype(str) + '%'
@@ -260,10 +274,10 @@ def hyperparameter_tuning_table(ax, eval_hypertune):
                         loc='center', bbox=[.1, .015, .85, .85])
     hypertune_table.set_fontsize(16)
     hypertune_table.scale(.85,2)
-    ax.set_title("Hyperparameter Tuning SVM", y=.885, fontsize=18)
+    ax.set_title("Hyperparameter Tuning SVM" if lang == "Indonesia" else "SVM Hyperparameter Tuning", y=.885, fontsize=18)
 
 
-def acc_bar_plot(ax, eval_predict):
+def acc_bar_plot(ax, eval_predict, lang):
     # preprocessing untuk penyesuaian streamlit
     eval_predict.set_index(eval_predict.columns[0], inplace=True)
 
@@ -281,16 +295,16 @@ def acc_bar_plot(ax, eval_predict):
 
     ax.set_xticks(X_axis, eval_predict.index, rotation=0)
     ax.tick_params(axis='both', which='major', labelsize=14)
-    ax.set_title("Performa Prediksi SVM", y=1.01, fontsize=18)
-    ax.set_ylabel("Persentase", fontsize=14)
-    ax.set_xlabel("Evaluasi", fontsize=14)
+    ax.set_title("Performa Prediksi SVM" if lang == "Indonesia" else "SVM Prediction Performance", y=1.01, fontsize=18)
+    ax.set_ylabel("Persentase" if lang == "Indonesia" else "Percentage", fontsize=14)
+    ax.set_xlabel("Evaluasi" if lang == "Indonesia" else "Evaluation", fontsize=14)
     ax.legend(loc='lower right', shadow=True, fontsize=14)
     ax.grid(True, axis='y')
 
     # st.pyplot(fig)
 
 
-def confusion_matrix_table(ax, conf_SVM):
+def confusion_matrix_table(ax, conf_SVM, lang):
     conf_SVM.set_index(conf_SVM.columns[0], inplace=True)
     # st.table(conf_SVM)
 
@@ -304,4 +318,4 @@ def confusion_matrix_table(ax, conf_SVM):
                         loc='center', bbox=[.2, .25, .75, .5])
     conf_table.set_fontsize(16)
     conf_table.scale(.6,3)
-    ax.set_title("Confusion Matrix SVM", y=.765, fontsize=18)
+    ax.set_title("Confusion Matrix SVM" if lang == 'Indonesia' else "SVM Confusion Matrix", y=.765, fontsize=18)
