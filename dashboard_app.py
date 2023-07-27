@@ -16,11 +16,13 @@ model_training = st.container()
 brush = alt.selection_interval()  
 nearest = alt.selection(type='single', nearest=True, on='mouseover', fields=['x'], empty='none')
 
+lang = st.sidebar.radio("Pilih bahasa / Select language:", ('Indonesia', 'English'))
+
 page_names_to_funcs = {
-    "Hasil Penelitian": main_dash.main_page,
-    "Prediksi Kinerja Mahasiswa": prediksi_dash.prediksi_page
+    "Hasil Penelitian" if lang == "Indonesia" else "Research Results": main_dash.main_page,
+    "Prediksi Kinerja Mahasiswa" if lang == "Indonesia" else "Student Performance Prediction": prediksi_dash.prediksi_page
 }
 
-selected_page = st.sidebar.selectbox("Select a page", page_names_to_funcs.keys())
-page_names_to_funcs[selected_page]()
+selected_page = st.sidebar.selectbox("Pilih halaman" if lang == "Indonesia" else "Select a page", page_names_to_funcs.keys())
+page_names_to_funcs[selected_page](lang)
 
