@@ -39,6 +39,10 @@ class SVM():
             self.gamma = self.gamma_auto
         elif gamma == "scale":
             self.gamma = self.gamma_scale
+        elif type(gamma) == float or type(gamma) == int:
+            self.gamma = self.gamma_float
+            self.gamma_value_float = gamma
+            
         
         # Set polynomial degree
         self.degree_poly = 3
@@ -89,6 +93,10 @@ class SVM():
     def gamma_scale(self, x):
         n_fitur = x.shape[1]
         self.gamma_value = 1 / (n_fitur * x.var())
+        
+    # Koefisien Kernel - Gamma dengan nilai float
+    def gamma_float(self, x):
+        self.gamma_value = self.gamma_value_float
     
 
     # Fungsi hitung cost gradien untuk menghitung nilai minimal / gradien
